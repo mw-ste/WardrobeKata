@@ -18,14 +18,14 @@ namespace Wardrobe.UnitTests
         [Fact]
         public void ReturnEmptyListOfConfigurationsForImpossibleCombinations()
         {
-            Assert.Empty(_sut.GetPossibleConfigurations(new[] { new Wardrobe(300) }));
-            Assert.Empty(_sut.GetPossibleConfigurations(new[] { new Wardrobe(33) }));
+            Assert.Empty(_sut.GetPossibleConfigurations(new[] { new Wardrobe(300, 600) }));
+            Assert.Empty(_sut.GetPossibleConfigurations(new[] { new Wardrobe(33, 66) }));
         }
 
         [Fact]
         public void NotReturnDuplicateConfigurations()
         {
-            var result = _sut.GetPossibleConfigurations(new[] { new Wardrobe(50) });
+            var result = _sut.GetPossibleConfigurations(new[] { new Wardrobe(50, 100) });
 
             Assert.Single(result);
         }
@@ -34,7 +34,7 @@ namespace Wardrobe.UnitTests
         [Fact]
         public void FindAllConfigurations()
         {
-            var result = _sut.GetPossibleConfigurations(new[] { new Wardrobe(100), new Wardrobe(50) }).ToList();
+            var result = _sut.GetPossibleConfigurations(new[] { new Wardrobe(100, 200), new Wardrobe(50, 100) }).ToList();
 
             foreach (var r in result)
             {
@@ -45,26 +45,26 @@ namespace Wardrobe.UnitTests
 
             Assert.Contains(result, r => r.Equals(new WardrobeConfiguration(new[]
             {
-                new Wardrobe(100), 
-                new Wardrobe(100), 
-                new Wardrobe(50)
+                new Wardrobe(100, 200),
+                new Wardrobe(100, 200),
+                new Wardrobe(50, 100)
             })));
 
             Assert.Contains(result, r => r.Equals(new WardrobeConfiguration(new[]
             {
-                new Wardrobe(100),
-                new Wardrobe(50),
-                new Wardrobe(50),
-                new Wardrobe(50)
+                new Wardrobe(100, 200),
+                new Wardrobe(50, 100),
+                new Wardrobe(50, 100),
+                new Wardrobe(50, 100)
             })));
 
             Assert.Contains(result, r => r.Equals(new WardrobeConfiguration(new[]
             {
-                new Wardrobe(50),
-                new Wardrobe(50),
-                new Wardrobe(50),
-                new Wardrobe(50),
-                new Wardrobe(50)
+                new Wardrobe(50, 100),
+                new Wardrobe(50, 100),
+                new Wardrobe(50, 100),
+                new Wardrobe(50, 100),
+                new Wardrobe(50, 100)
             })));
         }
     }

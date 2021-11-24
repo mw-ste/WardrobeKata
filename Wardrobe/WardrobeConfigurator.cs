@@ -15,37 +15,31 @@ namespace Wardrobe
         public IEnumerable<WardrobeConfiguration> GetPossibleConfigurations(IEnumerable<Wardrobe> availableWardrobes)
         {
             var list = availableWardrobes.Distinct().ToList();
-            return Stuff(new WardrobeConfiguration(new List<Wardrobe>()), list);
+            return GetPossibleConfigurationsRecursive(new WardrobeConfiguration(new List<Wardrobe>()), list);
         }
 
-        private IEnumerable<WardrobeConfiguration> Stuff(WardrobeConfiguration soFar, List<Wardrobe> remaining)
+        private IEnumerable<WardrobeConfiguration> GetPossibleConfigurationsRecursive(
+            WardrobeConfiguration wardrobeConfigrationSoFar,
+            IReadOnlyList<Wardrobe> remainingWardrobes)
         {
-            var list = new List<WardrobeConfiguration>();
-            
-            var remainingSpace = WallSize - soFar.Size;
+            var remainingSpace = WallSize - wardrobeConfigrationSoFar.Size;
 
             if (remainingSpace == 0)
             {
-                list.Add(soFar);
-                return list;
-            }
-            
-            if (!remaining.Any() || remainingSpace < 0)
-            {
-                return list;
+                return new List<WardrobeConfiguration> { wardrobeConfigrationSoFar };
             }
 
-            var rec = remaining.SelectMany(r =>
+            if (!remainingWardrobes.Any() || remainingSpace < 0)
             {
-                var newSoFar = new WardrobeConfiguration(soFar.Wardrobes.Append(r));
-                var newRemaining = remaining.Where(x => x.Size <= r.Size).ToList();
-                return Stuff(newSoFar, newRemaining);
+                return Enumerable.Empty<WardrobeConfiguration>();
+            }
+
+            return remainingWardrobes.SelectMany(wardrobe =>
+            {
+                var newWardrobeConfiguration = wardrobeConfigrationSoFar.WithAdditionalWardrobes(wardrobe);
+                var newRemainingWardrobes = remainingWardrobes.Where(x => x.Size <= wardrobe.Size).ToList();
+                return GetPossibleConfigurationsRecursive(newWardrobeConfiguration, newRemainingWardrobes);
             });
-
-
-            list.AddRange(rec);
-
-            return list;
         }
     }
 }

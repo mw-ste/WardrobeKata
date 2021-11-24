@@ -4,22 +4,33 @@ namespace Wardrobe
 {
     public record Wardrobe
     {
-        public Wardrobe(int size)
+        public int Size { get; init; }
+        public int Cost { get; init; }
+
+        public Wardrobe(int size, int cost)
         {
-            Size = GetCheckedValue(size);
+            Size = GetCheckedValue(size, nameof(Size));
+            Cost = GetCheckedValue(cost, nameof(Cost));
         }
 
-        private static int GetCheckedValue(int value)
+        private static int GetCheckedValue(int value, string property)
         {
             if (value <= 0)
             {
-                throw new ArgumentException($"Value must be larger than 0, but was {value}!");
+                throw new ArgumentException($"Value for {property} must be larger than 0, but was {value}!");
             }
 
             return value;
         }
 
-        public int Size { get; init; }
-        
+        public static Wardrobe operator +(Wardrobe some, Wardrobe other) => new Wardrobe(
+            some.Size + other.Size,
+            some.Cost + other.Cost);
+
+        public void Deconstruct(out int size, out int cost)
+        {
+            size = Size;
+            cost = Cost;
+        }
     }
 }
